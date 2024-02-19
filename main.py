@@ -1,4 +1,5 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
+from pathlib import Path
 from pydantic import BaseModel, PositiveInt
 from datetime import datetime
 from enum import Enum
@@ -29,6 +30,17 @@ async def get_model(model_name: ModelName):
 
     return {"model_name": model_name, "message": "Have some residuals"}
 
-@app.get("/files/{file_path:path}")
+@app.get("/docs/{file_path:path}")
 async def read_file(file_path: str):
-    return {"file_path": file_path}
+    file_location = Path('docs') / file_path
+    if not file_location.exist() or not file_location.is_file():
+        raise HTTPException(status_code=404, detail= "file not found" )
+    
+    with open(file_location, 'r') as file:
+        content = file.read()
+    
+    return {'content': content}
+
+# @app.get("/docs/{file_path:path}")
+# async def read_file(file_path: str):
+#     return {"file_path": file_path}
