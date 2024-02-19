@@ -44,3 +44,23 @@ async def read_file(file_path: str):
 # @app.get("/docs/{file_path:path}")
 # async def read_file(file_path: str):
 #     return {"file_path": file_path}
+
+fake_items_db = [{"item_name": "HP Laptop"}, {"item_name": "H Lap"}, {"item_name": "Teas"}]
+
+
+@app.get("/items/")
+async def read_item(skip: int = 0, limit: int = 10):
+    return fake_items_db[skip : skip + limit]
+
+
+products_db = [{'product_name': 'soap'},{'product_name': 'smapoo'}, {'product_name': 'toothbrush'},{'product_name': 'toilet Paper'}]
+@app.get('/toileteries/')
+async def read_toileteries(offset: int=0,range: int = 10):
+    return products_db[offset:offset + range]
+
+@app.get('/toileteries/{toiletries_id}')
+async def my_toileteries(toileteries_id: str, q: str | None=None):
+    if q:
+        return{'toileteries_id': toileteries_id, 'q': q}
+    else: 
+        return {'toileteries_id': toileteries_id}
